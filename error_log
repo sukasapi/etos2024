@@ -1,0 +1,12 @@
+[26-Jul-2023 21:05:31 Asia/Jakarta] PHP Warning:  Unterminated comment starting line 98 in /home/lppexternal/public_html/etos.culturedt.com/application/models/Master_model.php on line 98
+[26-Jul-2023 21:05:38 Asia/Jakarta] PHP Warning:  Unterminated comment starting line 98 in /home/lppexternal/public_html/etos.culturedt.com/application/models/Master_model.php on line 98
+[27-Nov-2023 20:15:41 Asia/Jakarta] PHP Fatal error:  Cannot redeclare Tes::monitoringpengisian() in /home/lppexternal/public_html/etos.culturedt.com/application/controllers/Tes.php on line 1602
+[27-Nov-2023 20:15:41 Asia/Jakarta] PHP Fatal error:  Cannot redeclare Tes::monitoringpengisian() in /home/lppexternal/public_html/etos.culturedt.com/application/controllers/Tes.php on line 1602
+[27-Nov-2023 20:15:42 Asia/Jakarta] PHP Fatal error:  Cannot redeclare Tes::monitoringpengisian() in /home/lppexternal/public_html/etos.culturedt.com/application/controllers/Tes.php on line 1602
+[27-Nov-2023 20:15:42 Asia/Jakarta] PHP Fatal error:  Cannot redeclare Tes::monitoringpengisian() in /home/lppexternal/public_html/etos.culturedt.com/application/controllers/Tes.php on line 1602
+[27-Nov-2023 20:15:42 Asia/Jakarta] PHP Fatal error:  Cannot redeclare Tes::monitoringpengisian() in /home/lppexternal/public_html/etos.culturedt.com/application/controllers/Tes.php on line 1602
+[27-Nov-2023 20:15:43 Asia/Jakarta] PHP Fatal error:  Cannot redeclare Tes::monitoringpengisian() in /home/lppexternal/public_html/etos.culturedt.com/application/controllers/Tes.php on line 1602
+[27-Nov-2023 20:15:46 Asia/Jakarta] PHP Fatal error:  Cannot redeclare Tes::monitoringpengisian() in /home/lppexternal/public_html/etos.culturedt.com/application/controllers/Tes.php on line 1602
+[27-Nov-2023 20:15:48 Asia/Jakarta] PHP Fatal error:  Cannot redeclare Tes::monitoringpengisian() in /home/lppexternal/public_html/etos.culturedt.com/application/controllers/Tes.php on line 1602
+[27-Nov-2023 20:15:48 Asia/Jakarta] PHP Fatal error:  Cannot redeclare Tes::monitoringpengisian() in /home/lppexternal/public_html/etos.culturedt.com/application/controllers/Tes.php on line 1602
+[27-Nov-2023 21:32:19 Asia/Jakarta] PHP Fatal error:  Cannot use [] for reading in /home/lppexternal/public_html/etos.culturedt.com/application/controllers/Tes.php on line 1994
