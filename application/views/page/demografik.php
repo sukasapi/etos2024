@@ -53,7 +53,7 @@
                                           foreach(sperusahaan(array("id"=>$_SESSION['logged_in']['perusahaan'])) as $p){
 
                                             echo "<option value='".$p->id."'>".$p->nama."</label>";
-
+ 
                                         }
                                         }else{
                                           echo "<option value='semua'>Semua Entitas</option>";

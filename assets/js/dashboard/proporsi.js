@@ -67,7 +67,7 @@ function getdata(type,company,batch){
     })
     return j;
   }
-
+ 
   function dispgraph(label,data,color,hover){
     var res ={
         type: 'pie',

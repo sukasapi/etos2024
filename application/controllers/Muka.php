@@ -271,7 +271,7 @@ class Muka extends CI_Controller {
 	} 
 
 	function demografik(){
-		//recalcbobot();
+		//recalcbobot(); 
 		//updatekinerja();
 		$this->output->set_template('dashboard');
 		$this->load->view('page/demografik');

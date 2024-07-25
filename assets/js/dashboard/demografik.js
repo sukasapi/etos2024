@@ -83,7 +83,7 @@ function updategrafik(datablok){
 }
  
 
-
+ 
 
  
     function datagraph(par1,par2,par3){
@@ -95,7 +95,7 @@ function updategrafik(datablok){
           data: {kategori:par1,entitas:par2,batch:par3},
           type: 'get',
           async:false, 
-          beforeSend: function(){
+          beforeSend: function(){ 
             $('#loading').modal('show');
           },
           success: function(result) {
