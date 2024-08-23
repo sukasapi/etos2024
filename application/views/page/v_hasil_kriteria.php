@@ -437,10 +437,35 @@
 
                     <div class="card-body pb-2 ">
                         <div class="row">
+                            <?php
+                                $k2023=0;
+                                $k2022=0;
+                                $k2021=0;
+                                $count=0;
+                                                
+                                foreach($detailkinerja as $dk){
+                                    //echo $dk['k2023'];
+                                    $k2023+=$dk['k2023'];
+                                    $k2022+=$dk['k2022'];
+                                    $k2021+=$dk['k2021'];
+                                    $count++;
+                                    }
+                                $d2023=ROUND($k2023/$count,2);
+                                $d2022=ROUND($k2022/$count,2);
+                                $d2021=ROUND($k2021/$count,2);
+
+                                $progress=round($d2023/$d2022,2)*100;
+
+                                echo "Total score 2023 :".$k2023."<br>?";
+                                echo "Total data :".$count."<br>";
+        ?>
+
                             <div class="col-md-12 col-xs-12 pb-4">
                                 <div class="text-center">
                                     <div class="progress" style="height: 40px;">
-                                        <div class="progress-bar" role="progressbar" style="width: 75%;background-color:<?=warna('5','75')?>" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"><h4 style="margin: auto;">75%</h4></div>
+                                        <div class="progress-bar bg-secondary" role="progressbar" style="width: 15%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
+                                        <div class="progress-bar bg-success" role="progressbar" style="width: 30%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
+                                        <!--<div class="progress-bar" role="progressbar" style="width: 75%;background-color:<?=warna(0,$progress)?>" aria-valuenow="<?=$progress?>" aria-valuemin="0" aria-valuemax="100"><h4 style="margin: auto;"><?=$progress?>%</h4></div> -->
                                     </div>
                                 </div>
                             </div>
@@ -448,13 +473,32 @@
                         <div class="row">
                             <div class="col-md-12 col-xs-12">
                                 <div class="table-responsive">
+
+
                                     <table class="table" style="width:100%">
                                         <thead>
                                             <tr>
-                                                <th>Parameter Kinerja</th>
-                                                <th>Nilai</th>
+                                                <th>Kinerja</th>
+                                                <th>Nilai Rerata Kinerja</th>
                                             </tr>
                                         </thead>
+                                        <tbody>
+                                        
+                                            <tr>
+                                                <td>2023</td>
+                                                <td><?=$d2023?></td>
+                                            </tr>
+                                            <tr>
+                                                <td>2022</td>
+                                                <td><?=$d2022?></td>
+                                            </tr>
+                                            <tr>
+                                                <td>2021</td>
+                                                <td><?=$d2021?></td>
+                                            </tr>
+                                        </tbody>
+                                    
+
                                     </table>
                                 </div>
                             </div>

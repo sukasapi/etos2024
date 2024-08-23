@@ -1870,11 +1870,12 @@ class Result extends CI_Controller {
 			$datatradisi=array();
 			$datatritertib=array();
 			$dataatribut=array();
-
+			$datakinerja=array();
 			$datacount=0;
 
 			$tmpnilaitradisi=array();
 			$tmpnilaiatribut=array();
+			$total=0;
 			
 			$query1=$this->db->get()->result();
 			foreach($query1 as $q){
@@ -1887,6 +1888,8 @@ class Result extends CI_Controller {
 						 ->where('j.is_aktif','aktif')
 						 ->group_by('j.soal');
 				$query2=$this->db->get()->result();
+
+				//kriteria 1-4
 				foreach($query2 as $q2){
 					$datacount++;
 					switch($q2->jenis_evaluasi){
@@ -1912,60 +1915,35 @@ class Result extends CI_Controller {
 						break;
 					}
 				}
+
+				//5.kinerja
+				$qkinerja=$this->db->select('*')
+						->from('tb_komparasi_kinerja')
+						->where('userid',$q->userid);
+				$dkinerja=$this->db->get()->result();
+				
+				//rerata
+				
+				$s2023=0;
+				foreach($dkinerja as $dk23){
+					$k2023=isset($dk23->kinerja2023) && $dk23->kinerja2023!="" && $dk23->kinerja2023!=null?$dk23->kinerja2023:0;
+					$k2022=isset($dk23->kinerja2022) && $dk23->kinerja2022!="" && $dk23->kinerja2022!=null?$dk23->kinerja2022:0;
+					$k2021=isset($dk23->smkbk2021) && $dk23->smkbk2021!="" && $dk23->smkbk2021!=null?$dk23->smkbk2021:0;
+					$dtkin[]=array(
+									"ud"=>$q->userid,
+									"nip"=>$q->nopeg,
+									"nama"=>$q->nama,
+									"k2023"=>$k2023,
+									"k2022"=>$k2022,
+									"k2021"=>$k2021,
+									"standard"=>100);
+				}
+				
+
 			}
 		/**/
-				
-		//hitung total
-		/*
-			$sumetos=0;
-			$countetos=0;
-			$sumtradisi=0;
-			$counttradisi=0;
-			$sumtritertib=0;
-			$counttritertib=0;
-			$sumatribut=0;
-			$countatribut=0;
-			$sumkinerja=0;
-			$countkinerja=0;
 
-			//1. hitung etos
-			foreach($dataetos as $key=>$de){
-				$sumetos+=array_sum($de);
-				$countetos+=count((array)$de);
-				$datacount++;
-			}		
-
-			//2. hitung tradisi
-			foreach($datatradisi as $key=>$dt){
-				$sumtradisi+=array_sum($dt);
-				$counttradisi+=count((array)$dt);
-				$datacount++;
-			}	
-
-			//3. hitung tritertib
-			foreach($datatritertib as $key=>$dtt){
-				$sumtritertib+=array_sum($dtt);
-				$counttritertib+=count((array)$dtt);
-				$datacount++;
-			}	
-
-			//3. hitung atribut
-			foreach($dataatribut as $key=>$da){
-				$sumatribut+=array_sum($da);
-				$countatribut+=count((array)$da);
-				$datacount++;
-			}	
-
-
-			$rataetos=round($sumetos/$countetos,2)*100;
-			$ratatradisi=round($sumtradisi/$counttradisi,2)*100;
-			$ratatritertib=round($sumtritertib/$counttritertib,2)*100;
-			$rataatribut=round($sumatribut/$countatribut,2)*100;
-
-			$total=($rataetos+$ratatradisi+$ratatritertib+$rataatribut)/4;
-			*/
-			// hitung etos per kriteria
-			//1. etos detail
+			
 
 			$tetos=0;
 			$cetos=0;
@@ -2038,6 +2016,9 @@ class Result extends CI_Controller {
 			$detailatribut['detail']=$atributhasil;			
 
 
+			//5/ data kinerja
+			$datakinerja=$dtkin;
+		
 			$total=round(($detailetos['total']+$detailtradisi['total']+$detailtritertib['total']+$detailatribut['total'])/4,2);
 
 			$end = microtime(true);
@@ -2054,6 +2035,8 @@ class Result extends CI_Controller {
 			$data['detailtradisi']=$detailtradisi;
 			$data['detailtritertib']=$detailtritertib;
 			$data['detailatribut']=$detailatribut;
+			$data['detailkinerja']=$dtkin;
+
 
 			$data['executetime']=$executionTime;
 			$data['postentitas']=$entitaschoose;
@@ -2067,5 +2050,32 @@ class Result extends CI_Controller {
 		else{
 			redirect('Muka/logout');
 		}
+	}
+
+
+	function tesres(){
+
+		$this->db->select('p.nopeg,p.userid,p.status_peserta,p.nama,c.id as idp,c.kode as perusahaan,p.unitusaha,p.jenis_asisten,p.komoditas,c.kode as kdc,p.jenis_asisten,p.komoditas,p.batch')
+		->from('tb_peserta as p')
+		->join('tb_user as u','u.id=p.userid')
+		->join('tb_perusahaan as c','c.id=u.company')
+		->limit(1000);
+		$query1=$this->db->get()->result();	
+		foreach($query1 as $q){
+			$qkinerja=$this->db->select('*')
+					 ->from('tb_komparasi_kinerja')
+					 ->where('userid',$q->userid);
+			$dkinerja=$this->db->get()->result();
+
+			foreach($dkinerja as $dk23){
+				$dtkin['ud'][]=$q->userid;
+				$dtkin['2023'][]=$dk23->kinerja2023;
+				$dtkin['2022'][]=$dk23->kinerja2023;
+				$dtkin['2021'][]=$dk23->kinerja2023;
+			}
+		}
+
+		print_r($dtkin);
+
 	}
 }
