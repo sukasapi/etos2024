@@ -1876,6 +1876,19 @@ class Result extends CI_Controller {
 			$tmpnilaitradisi=array();
 			$tmpnilaiatribut=array();
 			$total=0;
+
+			//kinerja
+			$count21=0;
+			$count22=0;
+			$count23=0;
+			$kinerja2021 = 0 ;
+			$kinerja2022 = 0 ;
+			$kinerja2023 = 0 ;
+			$t21 = 0 ;
+			$t22 = 0 ;
+			$t23 = 0 ;
+			$detailkinerja=array();
+			$summary=array();
 			
 			$query1=$this->db->get()->result();
 			foreach($query1 as $q){
@@ -1917,28 +1930,31 @@ class Result extends CI_Controller {
 				}
 
 				//5.kinerja
+				///get komparasi nilai
 				$qkinerja=$this->db->select('*')
-						->from('tb_komparasi_kinerja')
-						->where('userid',$q->userid);
-				$dkinerja=$this->db->get()->result();
-				
-				//rerata
-				
-				$s2023=0;
-				foreach($dkinerja as $dk23){
-					$k2023=isset($dk23->kinerja2023) && $dk23->kinerja2023!="" && $dk23->kinerja2023!=null?$dk23->kinerja2023:0;
-					$k2022=isset($dk23->kinerja2022) && $dk23->kinerja2022!="" && $dk23->kinerja2022!=null?$dk23->kinerja2022:0;
-					$k2021=isset($dk23->smkbk2021) && $dk23->smkbk2021!="" && $dk23->smkbk2021!=null?$dk23->smkbk2021:0;
-					$dtkin[]=array(
-									"ud"=>$q->userid,
-									"nip"=>$q->nopeg,
-									"nama"=>$q->nama,
-									"k2023"=>$k2023,
-									"k2022"=>$k2022,
-									"k2021"=>$k2021,
-									"standard"=>100);
+					 ->from('tb_komparasi_kinerja')
+					 ->where('userid',$q->userid)
+					 ->where('status','1');
+			    $dkinerja=$this->db->get()->row();
+				$kinerja2021=isset($dkinerja->smkbk2021) && $dkinerja->smkbk2021!="" && $dkinerja->smkbk2021>0?$dkinerja->smkbk2021:"-";
+				$kinerja2022=isset($dkinerja->kinerja2022) && $dkinerja->kinerja2022!=""  && $dkinerja->kinerja2022>0?$dkinerja->kinerja2022:"-";
+				$kinerja2023=isset($dkinerja->kinerja2023) && $dkinerja->kinerja2023!=""  && $dkinerja->kinerja2023>0?$dkinerja->kinerja2023:"-";
+				$detailkinerja[]=array("idus"=>$q->userid,"nip"=>$q->nopeg,"nama"=>$q->nama,"k2021"=>$kinerja2021,"k2022"=>$kinerja2022,"k2023"=>$kinerja2023);
+
+				if($kinerja2021 !="-"){
+					$count21++;
+					$t21+=$kinerja2021;
 				}
-				
+
+				if($kinerja2022 !="-"){
+					$count22++;
+					$t22+=$kinerja2022;
+				}
+
+				if($kinerja2023 !="-"){
+					$count23++;
+					$t23+=$kinerja2023;
+				}
 
 			}
 		/**/
@@ -2017,7 +2033,9 @@ class Result extends CI_Controller {
 
 
 			//5/ data kinerja
-			$datakinerja=$dtkin;
+			$summary['2021']=array('t'=>$t21,'j'=>$count21,'avg'=>ROUND($t21/$count21,2));
+			$summary['2022']=array('t'=>$t22,'j'=>$count22,'avg'=>ROUND($t22/$count22,2));
+			$summary['2023']=array('t'=>$t23,'j'=>$count23,'avg'=>ROUND($t23/$count23,2));
 		
 			$total=round(($detailetos['total']+$detailtradisi['total']+$detailtritertib['total']+$detailatribut['total'])/4,2);
 
@@ -2029,13 +2047,14 @@ class Result extends CI_Controller {
 			$data['tradisi']=$detailtradisi['total'];
 			$data['tritertib']=$detailtritertib['total'];
 			$data['atribut']=$detailatribut['total'];
+			$data['kinerja']=$summary;
 			$data['total']=$total;
 
 			$data['detailetos']=$detailetos;
 			$data['detailtradisi']=$detailtradisi;
 			$data['detailtritertib']=$detailtritertib;
 			$data['detailatribut']=$detailatribut;
-			$data['detailkinerja']=$dtkin;
+			$data['detailkinerja']=$detailkinerja;
 
 
 			$data['executetime']=$executionTime;
@@ -2054,7 +2073,115 @@ class Result extends CI_Controller {
 
 
 	function tesres(){
+		if(isset($_SESSION['logged_in']) && count((Array)$_SESSION['logged_in'])>0){
+			//set pilihan
+			if($_SESSION['logged_in']['perusahaan']=="all"){
+				$data['entitas']=$this->master->getperusahaan(array("is_aktif"=>"aktif"));
+				$data['batchlist']=array("1","2","3","4","5","6","7","8","9","10");
+			}else{
+				$data['entitas']=$this->master->getperusahaan(array("is_aktif"=>"aktif","id"=>$_SESSION['logged_in']['perusahaan']));
+				$data['batchlist']=array("1","2","3","4","5","6","7","8","9","10");
+			}
 
+			//jika ada post data
+			if(!isset($_POST['entitas']) || count((array)$_POST) <=0){
+				if($_SESSION['logged_in']['perusahaan']=="all"){
+					$batchchoose="all";
+					$entitaschoose="all";
+				}else{
+					$batchchoose="all";
+					$entitaschoose=$_SESSION['logged_in']['perusahaan'];
+				}
+			}else{
+				$batchchoose=isset($_POST['batch'])?$_POST['batch']:"all";
+				if($_SESSION['logged_in']['perusahaan']=="all"){
+					$entitaschoose=$_POST['entitas'];
+				}else{
+					$entitaschoose=$_SESSION['logged_in']['perusahaan'];
+				}
+				
+			}
+
+			//filter
+			if($entitaschoose=="all"){
+				if($batchchoose =="all"){
+					$where=array('u.isaktif'=>'1');
+				}else{
+					$where=array('u.isaktif'=>'1');
+					$batchdraft=explode(',',$batchchoose);
+					$where_in=$batchdraft;
+				}
+			}else{
+				if($batchchoose =="all"){
+					$where=array('u.isaktif'=>'1','u.company'=>$entitaschoose);
+				}else{
+					$where=array('u.isaktif'=>'1',"u.company"=>$entitaschoose);
+					$batchdraft=explode(',',$batchchoose);
+					$where_in=$batchdraft;
+				}
+			}
+
+			if(isset($where_in)){
+				$this->db->select('p.nopeg,p.userid,p.status_peserta,p.nama,c.id as idp,c.kode as perusahaan,p.unitusaha,p.jenis_asisten,p.komoditas,c.kode as kdc,p.jenis_asisten,p.komoditas,p.batch')
+				->from('tb_peserta as p')
+				->join('tb_user as u','u.id=p.userid')
+				->join('tb_perusahaan as c','c.id=u.company')
+				->where($where)
+				->where_in('p.batch',$where_in);
+			}else{
+				$this->db->select('p.nopeg,p.userid,p.status_peserta,p.nama,c.id as idp,c.kode as perusahaan,p.unitusaha,p.jenis_asisten,p.komoditas,c.kode as kdc,p.jenis_asisten,p.komoditas,p.batch')
+				->from('tb_peserta as p')
+				->join('tb_user as u','u.id=p.userid')
+				->join('tb_perusahaan as c','c.id=u.company')
+				->where($where);
+			}
+
+			$query1=$this->db->get()->result();
+			$count21=0;
+			$count22=0;
+			$count23=0;
+			$kinerja2021 = 0 ;
+			$kinerja2022 = 0 ;
+			$kinerja2023 = 0 ;
+			$t21 = 0 ;
+			$t22 = 0 ;
+			$t23 = 0 ;
+			$detailkinerja=array();
+			$summary=array();
+			foreach($query1 as $q){
+				///get komparasi nilai
+				$qkinerja=$this->db->select('*')
+					 ->from('tb_komparasi_kinerja')
+					 ->where('userid',$q->userid)
+					 ->where('status','1');
+			    $dkinerja=$this->db->get()->row();
+				$kinerja2021=isset($dkinerja->smkbk2021) && $dkinerja->smkbk2021!="" && $dkinerja->smkbk2021>0?$dkinerja->smkbk2021:"-";
+				$kinerja2022=isset($dkinerja->kinerja2022) && $dkinerja->kinerja2022!=""  && $dkinerja->kinerja2022>0?$dkinerja->kinerja2022:"-";
+				$kinerja2023=isset($dkinerja->kinerja2023) && $dkinerja->kinerja2023!=""  && $dkinerja->kinerja2023>0?$dkinerja->kinerja2023:"-";
+				$detailkinerja[]=array("idus"=>$q->userid,"nip"=>$q->nopeg,"nama"=>$q->nama,"k2021"=>$kinerja2021,"k2022"=>$kinerja2022,"k2023"=>$kinerja2023);
+
+				if($kinerja2021 !="-"){
+					$count21++;
+					$t21+=$kinerja2021;
+				}
+
+				if($kinerja2022 !="-"){
+					$count22++;
+					$t22+=$kinerja2022;
+				}
+
+				if($kinerja2023 !="-"){
+					$count23++;
+					$t23+=$kinerja2023;
+				}
+
+			}
+			$summary['2021']=array('t'=>$t21,'j'=>$count21,'avg'=>ROUND($t21/$count21,2));
+			$summary['2022']=array('t'=>$t22,'j'=>$count22,'avg'=>ROUND($t22/$count22,2));
+			$summary['2023']=array('t'=>$t23,'j'=>$count23,'avg'=>ROUND($t23/$count23,2));
+
+			//print_r($summary);
+		/*
 		$this->db->select('p.nopeg,p.userid,p.status_peserta,p.nama,c.id as idp,c.kode as perusahaan,p.unitusaha,p.jenis_asisten,p.komoditas,c.kode as kdc,p.jenis_asisten,p.komoditas,p.batch')
 		->from('tb_peserta as p')
 		->join('tb_user as u','u.id=p.userid')
@@ -2068,6 +2195,7 @@ class Result extends CI_Controller {
 			$dkinerja=$this->db->get()->result();
 
 			foreach($dkinerja as $dk23){
+
 				$dtkin['ud'][]=$q->userid;
 				$dtkin['2023'][]=$dk23->kinerja2023;
 				$dtkin['2022'][]=$dk23->kinerja2023;
@@ -2076,6 +2204,7 @@ class Result extends CI_Controller {
 		}
 
 		print_r($dtkin);
-
+		*/
+		}
 	}
 }
