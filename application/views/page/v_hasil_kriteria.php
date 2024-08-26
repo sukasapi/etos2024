@@ -425,7 +425,7 @@
         </div>
         <!-- End Nilai Tradisi -->
         
-        <!-- tradisi -->
+        <!-- Kinerja -->
         <div class="row pb-4">
             <div class="col-md-12 col-xs-12">
                 <div class="card">
@@ -434,75 +434,80 @@
                         <h5>Nilai Kinerja Planters</h5>
                         <p><i>dalam pembangunan</i></p>
                     </div>
-
-                    <div class="card-body pb-2 ">
-                        <div class="row">
-                            <?php
-                                $k2023=0;
-                                $k2022=0;
-                                $k2021=0;
-                                $count=0;
-                                                
-                                foreach($detailkinerja as $dk){
-                                    //echo $dk['k2023'];
-                                    $k2023+=$dk['k2023'];
-                                    $k2022+=$dk['k2022'];
-                                    $k2021+=$dk['k2021'];
-                                    $count++;
-                                    }
-                                $d2023=ROUND($k2023/$count,2);
-                                $d2022=ROUND($k2022/$count,2);
-                                $d2021=ROUND($k2021/$count,2);
-
-                                $progress=round($d2023/$d2022,2)*100;
-
-                                echo "Total score 2023 :".$k2023."<br>?";
-                                echo "Total data :".$count."<br>";
-        ?>
-
-                            <div class="col-md-12 col-xs-12 pb-4">
-                                <div class="text-center">
+                    <div class="card-body">
+                            <div class="row mb-2">
+                                <div class=" col-md-2 col-xs-2" >2021</div>
+                                <div class="col-md-10 col-xs-10">
                                     <div class="progress" style="height: 40px;">
-                                        <div class="progress-bar bg-secondary" role="progressbar" style="width: 15%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
-                                        <div class="progress-bar bg-success" role="progressbar" style="width: 30%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
-                                        <!--<div class="progress-bar" role="progressbar" style="width: 75%;background-color:<?=warna(0,$progress)?>" aria-valuenow="<?=$progress?>" aria-valuemin="0" aria-valuemax="100"><h4 style="margin: auto;"><?=$progress?>%</h4></div> -->
+                                        <div class="progress-bar bg-primary" role="progressbar" style="width: <?=$kinerja['2021']['avg']?>%" aria-valuenow="<?=$kinerja['2021']['avg']?>" aria-valuemin="0" aria-valuemax="100">Kinerja 2021 <?=$kinerja['2021']['avg']?></div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12 col-xs-12">
-                                <div class="table-responsive">
-
-
-                                    <table class="table" style="width:100%">
-                                        <thead>
-                                            <tr>
-                                                <th>Kinerja</th>
-                                                <th>Nilai Rerata Kinerja</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                        
-                                            <tr>
-                                                <td>2023</td>
-                                                <td><?=$d2023?></td>
-                                            </tr>
-                                            <tr>
-                                                <td>2022</td>
-                                                <td><?=$d2022?></td>
-                                            </tr>
-                                            <tr>
-                                                <td>2021</td>
-                                                <td><?=$d2021?></td>
-                                            </tr>
-                                        </tbody>
-                                    
-
-                                    </table>
+                            <div class="row mb-2">
+                                <div class="col-md-2 col-xs-2" >2022</div>
+                                <div class="col-md-10 col-xs-10 ">
+                                    <div class="text-center">
+                                        <div class="progress" style="height: 40px;">
+                                            <div class="progress-bar bg-info" role="progressbar" style="width: <?=$kinerja['2022']['avg']?>%" aria-valuenow="<?=$kinerja['2022']['avg']?>" aria-valuemin="0" aria-valuemax="100">Kinerja 2021 <?=$kinerja['2022']['avg']?></div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>                
+                            <div class="row mb-2">
+                                <div class=" col-md-2 col-xs-2" >2023</div>
+                                <div class="col-md-10 col-xs-10">
+                                    <div class="text-center">
+                                        <div class="progress" style="height: 40px;">
+                                            <div class="progress-bar bg-success" role="progressbar" style="width: <?=$kinerja['2023']['avg']?>%" aria-valuenow="<?=$kinerja['2023']['avg']?>" aria-valuemin="0" aria-valuemax="100">Kinerja 2023 <?=$kinerja['2023']['avg']?></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-4">
+                                <div class="col-md-12 col-xs-12">
+                                    <button class="btn btn-rounded btn-primary btn-block" type="button" data-toggle="collapse" data-target="#detailkinerja" aria-expanded="false" aria-controls="detailkinerja">Detail</button>
+                                </div>
+                            </div>
+                            <div class="row mb-4">
+                                <div class="col-md-12 col-xs-12">
+                                    <div id="detailkinerja" class="collapse">
+
+                                        <h2 class="text-center">Daftar Kinerja Peserta</h2>
+                                        <p class="text-center"><i>* data diambilkan dari nilai smkbk</i></p>
+                                        <div class="table-responsive">
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>No</th>
+                                                        <th>NIP</th>
+                                                        <th>Nama</th>
+                                                        <th>2021</th>
+                                                        <th>2022</th>
+                                                        <th>2023</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <?php 
+                                                        $no=1;
+                                                        foreach($detailkinerja as $dk){
+                                                            echo "<tr>";
+                                                            echo "<td>".$no."</td>";
+                                                            echo "<td>".$dk['nip']."</td>";
+                                                            echo "<td>".$dk['nama']."</td>";
+                                                            echo "<td>".$dk['k2021']."</td>";
+                                                            echo "<td>".$dk['k2022']."</td>";
+                                                            echo "<td>".$dk['k2023']."</td>";
+                                                            echo "</tr>";
+                                                            $no++;
+                                                        }
+                                                    ?>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>                       
+
                     </div>
                 </div> 
             </div>
